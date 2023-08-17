@@ -89,3 +89,12 @@ declare module 'vue' {
     | { new (): ComponentPublicInstance<Props> }
     | FunctionalComponent<Props>;
 }
+
+// 问题：webstorm + vue3 + ts 报错：Cannot find module '@/....'
+// 原因：ts只识别.ts文件，无法识别.vue文件
+// 解决办法
+declare module '*.vue' {
+  import Vue from 'vue';
+
+  export default Vue;
+}

@@ -1,13 +1,14 @@
 import { defHttp } from '/@/utils/http/axios';
 import { LoginParams, LoginResultModel, GetUserInfoModel } from './model/userModel';
-
 import { ErrorMessageMode } from '/#/axios';
+import { ContentTypeEnum } from '/@/enums/httpEnum';
+import MD5 from 'crypto-js/md5';
 
 enum Api {
-  Login = '/login',
-  Logout = '/logout',
-  GetUserInfo = '/getUserInfo',
-  GetPermCode = '/getPermCode',
+  Login = '/oauth2/admin/user/login',
+  Logout = '/oauth2/admin/user/logout',
+  GetUserInfo = '/user/admin/login/userInfo',
+  GetPermCode = '/user/admin/login/getPermList',
   TestRetry = '/testRetry',
 }
 
@@ -18,7 +19,15 @@ export function loginApi(params: LoginParams, mode: ErrorMessageMode = 'modal') 
   return defHttp.post<LoginResultModel>(
     {
       url: Api.Login,
-      params,
+      headers: { 'Content-Type': ContentTypeEnum.FORM_URLENCODED },
+      data: {
+        grant_type: 'password',
+        scope: 'web',
+        client_id: 'webApp',
+        client_secret: 'webApp',
+        username: params.username,
+        password: MD5(params.password).toString(),
+      },
     },
     {
       errorMessageMode: mode,
@@ -38,7 +47,7 @@ export function getPermCode() {
 }
 
 export function doLogout() {
-  return defHttp.get({ url: Api.Logout });
+  return defHttp.delete({ url: Api.Logout });
 }
 
 export function testRetry() {

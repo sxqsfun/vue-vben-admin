@@ -1,6 +1,7 @@
 import { defineComponent, computed, unref } from 'vue';
 import { BasicDrawer } from '/@/components/Drawer/index';
 import { Divider } from 'ant-design-vue';
+import { usePermission } from '/@/hooks/web/usePermission';
 import {
   TypePicker,
   // ThemeColorPicker,
@@ -10,7 +11,7 @@ import {
   InputNumberItem,
 } from './components';
 
-import { AppDarkModeToggle } from '/@/components/Application';
+// import { AppDarkModeToggle } from '/@/components/Application';
 
 import { MenuTypeEnum, TriggerEnum } from '/@/enums/menuEnum';
 
@@ -44,6 +45,7 @@ const { t } = useI18n();
 export default defineComponent({
   name: 'SettingDrawer',
   setup(_, { attrs }) {
+    const { togglePermissionMode } = usePermission();
     const {
       getContentMode,
       getShowFooter,
@@ -396,6 +398,18 @@ export default defineComponent({
       );
     }
 
+    function triggerRouter() {
+      return (
+        <>
+          <div style="width:100%;display:flex;justify-content: center;">
+            <a-button onClick={togglePermissionMode} type="primary">
+              切换权限模式
+            </a-button>
+          </div>
+        </>
+      );
+    }
+
     return () => (
       <BasicDrawer
         {...attrs}
@@ -403,8 +417,10 @@ export default defineComponent({
         width={330}
         class="setting-drawer"
       >
+        <Divider>切换模式</Divider>
+        {triggerRouter()}
         {unref(getShowDarkModeToggle) && <Divider>{() => t('layout.setting.darkMode')}</Divider>}
-        {unref(getShowDarkModeToggle) && <AppDarkModeToggle class="mx-auto" />}
+        {/* {unref(getShowDarkModeToggle) && <AppDarkModeToggle class="mx-auto" />} */}
         <Divider>{() => t('layout.setting.navMode')}</Divider>
         {renderSidebar()}
         {/* <Divider>{() => t('layout.setting.sysTheme')}</Divider>

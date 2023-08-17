@@ -36,27 +36,47 @@ const transform: AxiosTransform = {
     const { isTransformResponse, isReturnNativeResponse } = options;
     // 是否返回原生响应头 比如：需要获取响应头时使用该属性
     if (isReturnNativeResponse) {
+      if (res?.data?.code) {
+        switch (res.data.code) {
+          case ResultEnum.EXPIRED: //凭证无效或已过期
+            createMessage.error(res.data.msg);
+            const userStore = useUserStoreWithOut();
+            userStore.setToken(undefined);
+            userStore.logout(true);
+            throw new Error(res.data.msg);
+        }
+      }
       return res;
     }
     // 不进行任何处理，直接返回
     // 用于页面代码可能需要直接获取code，data，message这些信息时开启
     if (!isTransformResponse) {
+      if (res?.data?.code) {
+        switch (res.data.code) {
+          case ResultEnum.EXPIRED: //凭证无效或已过期
+            createMessage.error(res.data.msg);
+            const userStore = useUserStoreWithOut();
+            userStore.setToken(undefined);
+            userStore.logout(true);
+            throw new Error(res.data.msg);
+        }
+      }
       return res.data;
     }
     // 错误的时候返回
 
-    const { data } = res;
-    if (!data) {
+    const resData = res.data;
+    if (!resData) {
       // return '[HTTP] Request has no return value';
       throw new Error(t('sys.api.apiRequestFailed'));
     }
-    //  这里 code，result，message为 后台统一的字段，需要在 types.ts内修改为项目自己的接口返回格式
-    const { code, result, message } = data;
+    //  这里 code，data，msg为 后台统一的字段，需要在 types.ts内修改为项目自己的接口返回格式
+    const { code, data, msg } = resData;
 
     // 这里逻辑可以根据项目进行修改
-    const hasSuccess = data && Reflect.has(data, 'code') && code === ResultEnum.SUCCESS;
+    const hasSuccess = code && code === ResultEnum.SUCCESS;
     if (hasSuccess) {
-      let successMsg = message;
+      let successMsg = msg;
 
       if (isNull(successMsg) || isUnDef(successMsg) || isEmpty(successMsg)) {
         successMsg = t(`sys.api.operationSuccess`);
@@ -67,20 +87,30 @@ const transform: AxiosTransform = {
       } else if (options.successMessageMode === 'message') {
         createMessage.success(successMsg);
       }
-      return result;
+      return data;
     }
 
     // 在此处根据自己项目的实际情况对不同的code执行不同的操作
     // 如果不希望中断当前请求，请return数据，否则直接抛出异常即可
     let timeoutMsg = '';
+    if (msg) {
+      timeoutMsg = msg;
+    }
     switch (code) {
-      case ResultEnum.TIMEOUT:
-        timeoutMsg = t('sys.api.timeoutMessage');
+      // case ResultEnum.TIMEOUT:
+      //   timeoutMsg = t('sys.api.timeoutMessage');
+      //   const userStore = useUserStoreWithOut();
+      //   userStore.setToken(undefined);
+      //   userStore.logout(true);
+      //   break;
+      case ResultEnum.EXPIRED: //凭证无效或已过期
+        createMessage.error(timeoutMsg);
         const userStore = useUserStoreWithOut();
+        userStore.setToken(undefined);
         userStore.logout(true);
-        break;
+        throw new Error(res.data.msg);
       default:
-        if (message) {
+        if (msg) {
           timeoutMsg = message;
         }
     }
@@ -229,7 +259,7 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
         // See https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#authentication_schemes
         // authentication schemes，e.g: Bearer
         // authenticationScheme: 'Bearer',
-        authenticationScheme: '',
+        authenticationScheme: 'Bearer',
         timeout: 10 * 1000,
         // 基础接口地址
         // baseURL: globSetting.apiUrl,

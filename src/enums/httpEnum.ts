@@ -2,9 +2,10 @@
  * @description: Request result set
  */
 export enum ResultEnum {
-  SUCCESS = 0,
+  SUCCESS = 200,
   ERROR = -1,
   TIMEOUT = 401,
+  EXPIRED = 1009, //凭证无效或已过期
   TYPE = 'success',
 }
 

@@ -1,4 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router';
+import { useRoute } from 'vue-router';
 
 import { useAppStore } from '/@/store/modules/app';
 import { usePermissionStore } from '/@/store/modules/permission';
@@ -19,6 +20,7 @@ import { useMultipleTabStore } from '/@/store/modules/multipleTab';
 
 // User permissions related operations
 export function usePermission() {
+  const route = useRoute();
   const userStore = useUserStore();
   const appStore = useAppStore();
   const permissionStore = usePermissionStore();
@@ -75,8 +77,12 @@ export function usePermission() {
     if (PermissionModeEnum.BACK === permMode) {
       const allCodeList = permissionStore.getPermCodeList as string[];
       if (!isArray(value)) {
+        value = route.meta.menuId + '_' + value;
         return allCodeList.includes(value);
       }
+      // value.forEach((v) => {
+      //   v = route.meta.menuId + '_' + v;
+      // });
       return (intersection(value, allCodeList) as string[]).length > 0;
     }
     return true;
