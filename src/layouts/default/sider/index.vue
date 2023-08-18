@@ -55,4 +55,8 @@
       display: none;
     }
   }
+
+  .vben-layout-sideBar:not(.ant-layout-sider-dark) .ant-layout-sider-trigger {
+    border-top: 0;
+  }
 </style>

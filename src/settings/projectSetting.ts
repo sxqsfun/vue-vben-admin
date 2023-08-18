@@ -11,7 +11,7 @@ import {
 } from '/@/enums/appEnum';
 import { SIDE_BAR_BG_COLOR_LIST, HEADER_PRESET_BG_COLOR_LIST } from './designSetting';
 
-const primaryColor = '#0453E4';
+const primaryColor = '#2878FF';
 
 // ! 改动后需要清空浏览器缓存
 const setting: ProjectConfig = {
@@ -73,7 +73,7 @@ const setting: ProjectConfig = {
     // 主题
     theme: ThemeEnum.LIGHT,
     // 开启锁屏功能
-    useLockPage: false,
+    useLockPage: true,
     // 显示全屏按钮
     showFullScreen: true,
     // 显示文档按钮
@@ -81,13 +81,13 @@ const setting: ProjectConfig = {
     // 显示消息中心按钮
     showNotice: false,
     // 显示菜单搜索按钮
-    showSearch: false,
+    showSearch: true,
   },
 
   // 菜单配置
   menuSetting: {
     // 背景色
-    bgColor: SIDE_BAR_BG_COLOR_LIST[0],
+    bgColor: SIDE_BAR_BG_COLOR_LIST[3],
     // 是否固定住菜单
     fixed: true,
     // 菜单折叠

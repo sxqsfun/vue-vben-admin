@@ -11,7 +11,7 @@ html[data-theme='dark'] {
 html[data-theme='light'] {
   .@{prefix-cls} {
     .ant-tabs-tab:not(.ant-tabs-tab-active) {
-      border: 1px solid #d9d9d9 !important;
+      border: 0 !important;
     }
   }
 }
@@ -19,8 +19,8 @@ html[data-theme='light'] {
 .@{prefix-cls} {
   z-index: 10;
   height: @multiple-height + 2;
-  border-bottom: 1px solid @border-color-base;
-  background-color: @component-background;
+  //border-bottom: 1px solid @border-color-base;
+  //background-color: @component-background;
   line-height: @multiple-height + 2;
 
   .ant-tabs-small {
@@ -45,6 +45,7 @@ html[data-theme='light'] {
         height: calc(@multiple-height - 2px);
         padding-right: 12px;
         transition: none;
+        border-radius: 2px;
         background-color: @component-background;
         color: @text-color-base;
         line-height: calc(@multiple-height - 2px);
@@ -94,10 +95,10 @@ html[data-theme='light'] {
         padding-left: 18px;
         transition: none;
         border: 0;
-        background: @primary-color;
+        background: fade(@primary-color, 10);
 
         span {
-          color: @white !important;
+          color: @primary-color !important;
         }
 
         .ant-tabs-tab-remove {
@@ -106,7 +107,7 @@ html[data-theme='light'] {
 
         svg {
           width: 0.7em;
-          fill: @white;
+          fill: @primary-color;
         }
       }
     }
@@ -169,7 +170,7 @@ html[data-theme='light'] {
     }
 
     &__info {
-      display: inline-block;
+      display: inline-olock;
       width: 100%;
       height: @multiple-height - 2;
       margin-left: -10px;

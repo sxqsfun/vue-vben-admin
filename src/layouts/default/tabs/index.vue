@@ -141,4 +141,12 @@
 </script>
 <style lang="less">
   @import url('./index.less');
+
+  .vben-multiple-tabs .ant-tabs-nav {
+    background-color: transparent !important;
+  }
+
+  .ant-tabs-top > .ant-tabs-nav::before {
+    border-bottom: 0;
+  }
 </style>

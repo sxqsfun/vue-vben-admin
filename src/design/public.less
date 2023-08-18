@@ -49,3 +49,57 @@
     background-color: @primary-color;
   }
 }
+
+// =============自定义样式=====================
+// 修改头部选中样式
+.ant-layout-header .ant-menu-item-selected {
+  background-color: @primary-color !important;
+  color: #fff !important;
+}
+
+.ant-layout-header .ant-menu-item:hover {
+  color: @primary-color;
+}
+
+//去除头部下边框
+.vben-layout-header--light {
+  border-bottom: 0 !important;
+}
+
+.ant-menu-horizontal {
+  border-bottom: 0 !important;
+}
+
+.vben-app-logo.light {
+  border-bottom: 0 !important;
+}
+
+// 覆盖菜单栏选中后边框靠左
+.vben-menu-light.vben-menu-vertical .vben-menu-item-active:not(.vben-menu-submenu)::after {
+  left: 0;
+}
+
+// 覆盖主页背景颜色
+.ant-layout {
+  background: #f8f8fd !important;
+}
+
+//修改table设置按钮样式
+.table-settings {
+  margin-top: 10px;
+}
+
+//修改搜索栏样式
+.vben-basic-table-form-container .ant-form {
+  border-radius: 10px;
+}
+
+//修改table样式
+.vben-basic-table .ant-table-wrapper {
+  padding: 0 !important;
+  border-radius: 10px !important;
+}
+
+.vben-basic-table .ant-table-wrapper .ant-table-title .items-center {
+  padding: 10px 10px 0 !important;
+}
