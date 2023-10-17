@@ -25,7 +25,8 @@ export default defineApplicationConfig({
     server: {
       proxy: {
         '/basic-api': {
-          target: 'http://10.0.1.37:9010',
+          // target: 'http://10.0.1.37:9010',
+          target: 'http://localhost:9010',
           changeOrigin: true,
           ws: true,
           rewrite: (path) => path.replace(new RegExp(`^/basic-api`), ''),

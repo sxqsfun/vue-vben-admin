@@ -2,6 +2,7 @@ export default {
   footer: { onlinePreview: '在线预览', onlineDocument: '在线文档' },
   header: {
     // user dropdown
+    dropdownItemChangePassword: '修改密码',
     dropdownItemDoc: '文档',
     dropdownItemLoginOut: '退出系统',
 
@@ -56,6 +57,7 @@ export default {
 
     copyBtn: '拷贝',
     clearBtn: '清空缓存并返回登录页',
+    clearTip: '清空缓存',
 
     drawerTitle: '项目配置',
 

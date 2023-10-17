@@ -8,8 +8,7 @@
   <h2
     class="mb-3 text-2xl font-bold text-center xl:text-3xl enter-x xl:text-left"
     style="font-size: 28px; font-weight: 500"
-    >超低排放环保平台</h2
-  >
+  >Wing</h2>
   <br />
   <br />
   <Form

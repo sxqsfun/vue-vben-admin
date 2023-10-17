@@ -4,7 +4,7 @@
       <img :class="`${prefixCls}__header`" :src="getUserInfo.avatar" />
       <span :class="`${prefixCls}__info hidden md:block`">
         <span :class="`${prefixCls}__name  `" class="truncate">
-          {{ getUserInfo.realName }}
+          {{ getUserInfo.username }}
         </span>
       </span>
     </span>
@@ -12,12 +12,18 @@
     <template #overlay>
       <Menu @click="handleMenuClick">
         <MenuItem
+          key="updatePassword"
+          :text="t('layout.header.dropdownItemChangePassword')"
+          icon="ion:document-text-outline"
+        />
+        <MenuItem
           key="doc"
           :text="t('layout.header.dropdownItemDoc')"
           icon="ion:document-text-outline"
           v-if="getShowDoc"
         />
         <MenuDivider v-if="getShowDoc" />
+        <MenuItem key="clear" :text="t('layout.setting.clearTip')" icon="ion:reload-outline" />
         <MenuItem
           v-if="getUseLockPage"
           key="lock"
@@ -33,6 +39,7 @@
     </template>
   </Dropdown>
   <LockAction @register="register" />
+  <UpdatePwd @register="registerModal" @success="handleSuccess" />
 </template>
 <script lang="ts">
   // components
@@ -43,6 +50,9 @@
 
   import { DOC_URL } from '/@/settings/siteSetting';
 
+  import { useAppStore } from '/@/store/modules/app';
+  import { usePermissionStore } from '/@/store/modules/permission';
+  import { useMultipleTabStore } from '/@/store/modules/multipleTab';
   import { useUserStore } from '/@/store/modules/user';
   import { useHeaderSetting } from '/@/hooks/setting/useHeaderSetting';
   import { useI18n } from '/@/hooks/web/useI18n';
@@ -55,13 +65,16 @@
 
   import { createAsyncComponent } from '/@/utils/factory/createAsyncComponent';
 
-  type MenuEvent = 'logout' | 'doc' | 'lock';
+  import UpdatePwd from './UpdatePwd.vue';
+
+  type MenuEvent = 'logout' | 'doc' | 'lock' | 'updatePassword' | 'clear';
 
   export default defineComponent({
     name: 'UserDropdown',
     components: {
       Dropdown,
       Menu,
+      UpdatePwd,
       MenuItem: createAsyncComponent(() => import('./DropMenuItem.vue')),
       MenuDivider: Menu.Divider,
       LockAction: createAsyncComponent(() => import('../lock/LockModal.vue')),
@@ -74,13 +87,17 @@
       const { t } = useI18n();
       const { getShowDoc, getUseLockPage } = useHeaderSetting();
       const userStore = useUserStore();
+      const permissionStore = usePermissionStore();
+      const tabStore = useMultipleTabStore();
+      const appStore = useAppStore();
 
       const getUserInfo = computed(() => {
-        const { realName = '', avatar, desc } = userStore.getUserInfo || {};
-        return { realName, avatar: avatar || headerImg, desc };
+        const { username = '', avatar, desc } = userStore.getUserInfo || {};
+        return { username, avatar: avatar || headerImg, desc };
       });
 
       const [register, { openModal }] = useModal();
+      const [registerModal, { openModal: openUpdatePwdModal }] = useModal();
 
       function handleLock() {
         openModal(true);
@@ -96,6 +113,29 @@
         openWindow(DOC_URL);
       }
 
+      //修改密码
+      function updatePassword() {
+        openUpdatePwdModal(true, {});
+      }
+
+      //清空缓存
+      function clear() {
+        localStorage.clear();
+        appStore.resetAllState();
+        permissionStore.resetState();
+        tabStore.resetState();
+        userStore.resetState();
+        location.reload();
+      }
+
+      //修改成功
+      const handleSuccess = () => {
+        //重新登录
+        userStore.confirmLoginOut();
+        // 无确认框登出
+        // userStore.logout();
+      };
+
       function handleMenuClick(e: MenuInfo) {
         switch (e.key as MenuEvent) {
           case 'logout':
@@ -107,12 +147,20 @@
           case 'lock':
             handleLock();
             break;
+          case 'updatePassword':
+            updatePassword();
+            break;
+          case 'clear':
+            clear();
+            break;
         }
       }
 
       return {
         prefixCls,
         t,
+        registerModal,
+        handleSuccess,
         getUserInfo,
         handleMenuClick,
         getShowDoc,

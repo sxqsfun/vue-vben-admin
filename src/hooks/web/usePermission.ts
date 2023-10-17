@@ -78,6 +78,9 @@ export function usePermission() {
       const allCodeList = permissionStore.getPermCodeList as string[];
       if (!isArray(value)) {
         value = route.meta.menuId + '_' + value;
+        if (userStore?.userInfo?.admin) {
+          return true;
+        }
         return allCodeList.includes(value);
       }
       // value.forEach((v) => {

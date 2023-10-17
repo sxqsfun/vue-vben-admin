@@ -3,31 +3,31 @@
     <BasicForm @register="registerForm" />
   </BasicModal>
 </template>
-
 <script lang="ts">
   import { defineComponent, ref, computed, unref } from 'vue';
   import { BasicModal, useModalInner } from '/@/components/Modal';
-  import { BasicForm, useForm } from '/@/components/Form/index';
-  import { formSchema } from './data';
-  import { ResultEnum } from '/@/enums/httpEnum';
+  import { BasicForm, useForm } from '/@/components/Form';
+  import { formSchema } from '../data';
   import { useMessage } from '/@/hooks/web/useMessage';
-  import { addJob, updateJob } from './api';
+  import { ResultEnum } from '/@/enums/httpEnum';
+  import { AddDictType, UpdateDictType } from '../api';
 
   export default defineComponent({
-    name: 'JobModal',
+    name: 'UserModal',
     components: { BasicModal, BasicForm },
     emits: ['success', 'register'],
     setup(_, { emit }) {
       const isUpdate = ref(true);
+      const rowId = ref('');
       const { createMessage } = useMessage();
-
-      const [registerForm, { resetFields, setFieldsValue, validate }] = useForm({
+      const [registerForm, { setFieldsValue, resetFields, validate }] = useForm({
         labelWidth: 100,
         baseColProps: { span: 24 },
         schemas: formSchema,
         showActionButtonGroup: false,
-        colon: true,
-        searchShow: false,
+        actionColOptions: {
+          span: 23,
+        },
       });
 
       const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
@@ -36,38 +36,41 @@
         isUpdate.value = !!data?.isUpdate;
 
         if (unref(isUpdate)) {
+          rowId.value = data.record.id;
+
           setFieldsValue({
             ...data.record,
           });
         }
       });
 
-      const getTitle = computed(() => (!unref(isUpdate) ? '新增任务' : '编辑任务'));
+      const getTitle = computed(() => (!unref(isUpdate) ? '新增字典' : '编辑字典'));
 
       async function handleSubmit() {
         try {
           const values = await validate();
           setModalProps({ confirmLoading: true });
-
+          // 添加字典类型/修改字典类型
           if (isUpdate.value) {
-            const result = await updateJob(values);
-            if (result.code == ResultEnum.SUCCESS) {
-              createMessage.success(result.msg);
-              closeModal();
-              emit('success');
-            } else {
+            //修改
+            const result = await UpdateDictType(values);
+            if (result.code != ResultEnum.SUCCESS) {
               createMessage.error(result.msg);
+              return;
             }
+            createMessage.success(result.msg);
           } else {
-            const result = await addJob(values);
-            if (result.code == ResultEnum.SUCCESS) {
-              createMessage.success(result.msg);
-              closeModal();
-              emit('success');
-            } else {
+            //添加
+            const result = await AddDictType(values);
+            if (result.code != ResultEnum.SUCCESS) {
               createMessage.error(result.msg);
+              return;
             }
+            createMessage.success(result.msg);
           }
+
+          closeModal();
+          emit('success', { isUpdate: unref(isUpdate), values: { ...values, id: rowId.value } });
         } finally {
           setModalProps({ confirmLoading: false });
         }

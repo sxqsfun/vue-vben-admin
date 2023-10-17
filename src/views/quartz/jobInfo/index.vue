@@ -58,7 +58,7 @@
         </template>
       </template>
     </BasicTable>
-    <JobModal @register="registerModal" @success="handleSuccess" />
+    <AddModal @register="registerModal" @success="handleSuccess" />
   </div>
 </template>
 
@@ -70,12 +70,12 @@
   import { useModal } from '/@/components/Modal';
   import { usePermission } from '/@/hooks/web/usePermission';
   import { ResultEnum } from '/@/enums/httpEnum';
-  import JobModal from './modal.vue';
+  import AddModal from './add/AddModal.vue';
   import { columns, searchFormSchema } from './data';
 
   export default defineComponent({
     name: 'JobManagement',
-    components: { BasicTable, JobModal, TableAction },
+    components: { BasicTable, AddModal, TableAction },
     setup() {
       const { createMessage } = useMessage();
       const { hasPermission } = usePermission();

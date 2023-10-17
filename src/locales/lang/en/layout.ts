@@ -2,6 +2,7 @@ export default {
   footer: { onlinePreview: 'Preview', onlineDocument: 'Document' },
   header: {
     // user dropdown
+    dropdownItemChangePassword: 'ChangePassword',
     dropdownItemDoc: 'Document',
     dropdownItemLoginOut: 'Log Out',
 
@@ -56,6 +57,7 @@ export default {
 
     copyBtn: 'Copy',
     clearBtn: 'Clear cache and to the login page',
+    clearTip: 'Clear cache',
 
     drawerTitle: 'Configuration',
 

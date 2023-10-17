@@ -1,5 +1,10 @@
 <template>
   <div :class="prefixCls">
+    <a-button color="error" block @click="handleClearAndRedo" class="my-3">
+      <RedoOutlined class="mr-2" />
+      {{ t('layout.setting.clearBtn') }}
+    </a-button>
+
     <a-button type="primary" block @click="handleCopy">
       <CopyOutlined class="mr-2" />
       {{ t('layout.setting.copyBtn') }}
@@ -8,11 +13,6 @@
     <a-button color="warning" block @click="handleResetSetting" class="my-3">
       <RedoOutlined class="mr-2" />
       {{ t('common.resetText') }}
-    </a-button>
-
-    <a-button color="error" block @click="handleClearAndRedo">
-      <RedoOutlined class="mr-2" />
-      {{ t('layout.setting.clearBtn') }}
     </a-button>
   </div>
 </template>

@@ -9,6 +9,8 @@ enum Api {
   Logout = '/oauth2/admin/user/logout',
   GetUserInfo = '/user/admin/login/userInfo',
   GetPermCode = '/user/admin/login/getPermList',
+  VerifyPwd = '/user/admin/user/verifyPwd',
+  UpdatePwd = '/user/admin/user/updateSelfPwd',
   TestRetry = '/testRetry',
 }
 
@@ -48,6 +50,34 @@ export function getPermCode() {
 
 export function doLogout() {
   return defHttp.delete({ url: Api.Logout });
+}
+
+/**
+ * @description: VerifyPwd
+ */
+export function VerifyPwd(params: { id: string | number; pwd: string }) {
+  return defHttp.put<any>(
+    {
+      url: Api.VerifyPwd,
+      headers: { 'Content-Type': ContentTypeEnum.FORM_URLENCODED },
+      data: { id: params.id, pwd: MD5(params.pwd).toString() },
+    },
+    { isTransformResponse: false, errorMessageMode: 'none' },
+  );
+}
+
+/**
+ * @description: VerifyPwd
+ */
+export function UpdatePwd(params: { id: string | number; pwd: any }) {
+  return defHttp.put<any>(
+    {
+      url: Api.UpdatePwd,
+      headers: { 'Content-Type': ContentTypeEnum.FORM_URLENCODED },
+      data: { id: params.id, pwd: MD5(params.pwd).toString() },
+    },
+    { isTransformResponse: false, errorMessageMode: 'none' },
+  );
 }
 
 export function testRetry() {
